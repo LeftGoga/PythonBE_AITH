@@ -1,5 +1,7 @@
 import json
 from urllib.parse import parse_qs
+
+
 def fibonacci(n):
     if not isinstance(n, float):
         raise SyntaxError()
@@ -11,6 +13,7 @@ def fibonacci(n):
         return 1
     else:
         return fibonacci(n-1) + fibonacci(n-2)
+
 
 def factorial(n):
 
@@ -24,12 +27,12 @@ def factorial(n):
             result *= i
         return result
 
-def mean(numbers:list[float]):
-    if not numbers:
-        print("raise value error in mean")
-        raise ValueError("Cannot calculate mean of an empty list.")
-    return sum(numbers) / len(numbers)
 
+def mean(numbers):
+
+    if not numbers:
+        raise ValueError()
+    return sum(numbers) / len(numbers)
 
 
 async def send_response(send, status, body):
@@ -46,8 +49,6 @@ async def send_response(send, status, body):
     })
 
 
-
-
 async def app(scope, receive, send):
 
     query_string = scope.get('query_string', b'').decode('utf-8')
@@ -62,9 +63,8 @@ async def app(scope, receive, send):
 
             result = fibonacci(n)
             body = json.dumps({"result": result})
-            await send_response(send,200,body)
+            await send_response(send,200, body)
             return
-
 
         elif scope["path"].startswith("/factorial"):
 
@@ -76,21 +76,25 @@ async def app(scope, receive, send):
 
             result = factorial(n)
             body = json.dumps({"result": result})
-            await send_response(send,200,body)
+            await send_response(send,200, body)
             return
 
         elif scope["path"].startswith("/mean"):
             request = await receive()
             body = request['body'].decode('utf-8')
+            print(body, type(body))
 
             if not body:
                 raise SyntaxError
-
-
             try:
-                nums = json.loads(body)
+                json.loads(body)
+
             except:
                 raise SyntaxError
+
+            nums = json.loads(body)
+            if not isinstance(nums, list) or not all(isinstance(x, (int, float)) for x in nums):
+                raise SyntaxError()
 
             result = mean(nums)
             response = json.dumps({'result': result})
@@ -109,7 +113,6 @@ async def app(scope, receive, send):
         status = 400
         body = b"Error 400"
 
-
     await send(
         {
                 "type": "http.response.start",
@@ -124,4 +127,5 @@ async def app(scope, receive, send):
                 "more_body": False,
             }
         )
-
+if __name__ == "__main__":
+    print(mean("test"))
