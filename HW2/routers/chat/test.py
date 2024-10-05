@@ -38,4 +38,4 @@ async def chat_client(chat_name):
 
 if __name__ == "__main__":
     chat_name = input("Enter chat name: ")
-    asyncio.run(chat_client(chat_name))
+    asyncio.run(chat_client(chat_name)  )
