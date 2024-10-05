@@ -1,9 +1,9 @@
-from fastapi import APIRouter, HTTPException, Query, Response
+from fastapi import APIRouter, HTTPException, Response
 from http import HTTPStatus
-from typing import List, Optional
+
 from pydantic import NonNegativeFloat,NonNegativeInt,PositiveInt
 from HW2.models.models import Item, ItemInCart,Cart
-import json
+
 
 
 
@@ -12,7 +12,7 @@ router_item = APIRouter(prefix="/item")
 
 
 
-carts = {}
+carts = {1:Cart(id=1,items=[ItemInCart(id=3,name="test",quantity=3, available=True)],price=231)}
 
 items = {1: Item(id=1,name="test",price=150), 2:Item(id=2,name="test2",price=152, deleted =True)}
 
@@ -58,11 +58,8 @@ async def get_cart_by_params(offset:NonNegativeInt = 0, limit: PositiveInt = 10,
         filtered_carts = [cart for cart in filtered_carts if sum(item.quantity for item in cart.items) <= max_quantity]
     filtered_carts= filtered_carts[offset:offset + limit]
 
-    response = [{"id":x.id, "quantity":sum(item.quantity for item in x.items), "price": x.price} for x in filtered_carts ]
-    # for i,j in enumerate(filtered_carts):
-    #     filtered_carts[i]["quantity"] = quant[i]
-    # ids = [int(x.id) for x in filtered_carts]
-    #response = dict(zip(ids,filtered_carts))
+    response = [{"id":x.id,"items":x.items, "quantity":sum(item.quantity for item in x.items), "price": x.price} for x in filtered_carts ]
+
     return response
 
 
