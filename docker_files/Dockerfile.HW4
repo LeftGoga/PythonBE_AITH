@@ -1,0 +1,24 @@
+# Use an official Python runtime as a parent image
+FROM python:3.12
+
+# Set the working directory in the container
+WORKDIR /HW4
+
+# Copy the current directory contents into the container at /HW2
+COPY . /HW4/
+
+COPY HW4/requirements.txt HW4/requirements.txt
+
+# Install any needed packages specified in requirements.txt
+RUN pip install --no-cache-dir -r HW4/requirements.txt
+
+# Set the PYTHONPATH environment variable
+ENV PYTHONPATH=/HW4
+
+# Make port 80 available to the world outside this container
+EXPOSE 80
+
+# Run the application using Uvicorn
+
+#http://localhost:80
+CMD ["uvicorn", "HW4.demo_service.api.main:app", "--host", "0.0.0.0", "--port", "80"]
