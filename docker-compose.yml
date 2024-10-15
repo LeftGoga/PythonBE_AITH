@@ -1,18 +1,18 @@
-version: '3'
+version: '3.12'
 
 services:
-  HW2:
-    image: testapp:latest
+  HW4:
+    image: hw4
     build:
       context: .
-      dockerfile: ./PythonBackendAITH/docker_files/Dockerfile.HW2
-    container_name: test_app
+      dockerfile: ./docker_files/Dockerfile.HW4
+    container_name: hw4
     ports:
       - "80:80"
     environment:
-      - PYTHONPATH=/HW2
+      - PYTHONPATH=/HW4
 
-    command: uvicorn HW2.shop_api.main:app --host 0.0.0.0 --port 80
+    command: uvicorn HW4.demo_service.api.main:app --host 0.0.0.0 --port 80
 
   prometheus:
     image: prom/prometheus:latest
@@ -28,3 +28,14 @@ services:
     image: grafana/grafana:latest
     ports:
       - "3000:3000"
+
+  locust:
+      image: locustio/locust
+      ports:
+        - "8089:8089"
+      volumes:
+        - ./HW4/tests_hw4/locust:/mnt/locust
+      command: -f /mnt/locust/locustfile.py --host http://HW4:80
+      environment:
+        - PIP_EXTRA_INDEX_URL=https://pypi.org/simple
+      entrypoint: /bin/sh -c "pip install prometheus_client && locust -f /mnt/locust/locustfile.py --host http://fastapi:8000"
