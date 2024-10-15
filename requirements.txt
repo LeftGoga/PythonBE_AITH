@@ -43,7 +43,6 @@ pytest==8.3.3
 pytest-asyncio==0.24.0
 pytest-cov==5.0.0
 python-dateutil==2.9.0.post0
-pywin32==308
 pyzmq==26.2.0
 requests==2.32.3
 setuptools==75.1.0
