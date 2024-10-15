@@ -25,4 +25,4 @@ jobs:
             pip install -r requirements.txt 
 
         - name: run tests
-          run:  pytest ./HW4/tests_hw4/tests.py --cov=HW4/demo_service/ -cov-report=html
+          run:  pytest ./HW4/tests_hw4/tests.py --cov=HW4/demo_service/ -cov-report=term-missing
